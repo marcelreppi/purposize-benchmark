@@ -1,8 +1,8 @@
-const Users = require("../models/User")
+const User = require("../models/User")
 
 exports.getAllUsers = async (req, res) => {
   const { purpose } = req.query
-  const result = await Users.findAll({
+  const result = await User.findAll({
     purpose: purpose,
   })
   res.json(result)
@@ -11,7 +11,7 @@ exports.getAllUsers = async (req, res) => {
 exports.getUserById = async (req, res) => {
   const { id } = req.params
   const { purpose } = req.query
-  const result = await Users.find({
+  const result = await User.find({
     where: {
       id,
     },

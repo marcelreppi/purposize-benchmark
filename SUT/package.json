@@ -6,7 +6,10 @@
     "start": "nodemon start.js"
   },
   "dependencies": {
+    "dotenv": "^8.2.0",
+    "ejs": "^3.0.1",
     "express": "^4.17.1",
+    "faker": "^4.1.0",
     "pg": "^7.14.0",
     "purposize": "^1.1.5",
     "sequelize": "^5.21.2"

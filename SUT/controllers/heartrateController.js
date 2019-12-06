@@ -1,9 +1,9 @@
-const Heartrates = require("../models/Heartrate")
-const HeartrateLogs = require("../models/HeartrateLog")
+const Heartrate = require("../models/Heartrate")
+const HeartrateLog = require("../models/HeartrateLog")
 
 exports.getAllHeartrates = async (req, res) => {
   const { purpose } = req.query
-  const result = await Heartrates.findAll({
+  const result = await Heartrate.findAll({
     purpose: purpose,
   })
   res.json(result)
@@ -11,7 +11,7 @@ exports.getAllHeartrates = async (req, res) => {
 
 exports.renderHeartrates = async (req, res) => {
   const { purpose } = req.query
-  const result = await HeartrateLogs.findAll({
+  const result = await HeartrateLog.findAll({
     purpose: purpose,
   })
   res.json(result)

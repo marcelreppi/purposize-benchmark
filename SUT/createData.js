@@ -1,6 +1,6 @@
 const faker = require("faker")
 
-const { Users, Heartrates, HeartrateLogs } = require("./models")
+const { User, Heartrate, HeartrateLog } = require("./models")
 
 const nUsers = parseFloat(process.env.N_USERS)
 const nHeartratrLogs = parseFloat(process.env.N_HEARTRATELOGS)
@@ -9,43 +9,50 @@ const heartrateLogLength = parseFloat(process.env.HEARTRATELOG_LENGTH)
 async function createData() {
   // Create fake user data
   for (let i = 0; i < nUsers; i++) {
-    await Users.create({
-      name: `${faker.name.firstName()} ${faker.name.lastName()}`,
-      email: `${faker.name
-        .firstName()
-        .toLowerCase()}.${faker.name.lastName().toLowerCase()}@test.com`,
+    const name = `${faker.name.firstName()} ${faker.name.lastName()}`
+    const user = await User.create({
+      name,
+      email: `${name.replace(" ", ".").toLowerCase()}@test.com`,
       dateOfBirth: faker.date.past().toISOString(),
       gender: getGender(),
       phoneNumber: faker.phone.phoneNumber(),
     })
-  }
 
-  // Create fake heartrate logs
-  const today = new Date()
-  for (let i = 0; i < nHeartratrLogs; i++) {
-    let currentLog = []
-    const startDate = new Date(today.getTime() - i * 1000 * 60 * 60 * 24)
-    const baseHeartrate = 60 + Math.floor(Math.random() * 141) // Value between 60-200
-    for (let j = 0; j < heartrateLogLength; j++) {
-      const randomDeviation = Math.floor(Math.random() * 4)
-      const value =
-        Math.random() < 0.5 ? baseHeartrate + randomDeviation : baseHeartrate - randomDeviation
-      const heartrate = await Heartrates.create({
-        value, // Base heartrate + random deviation
-        timestamp: new Date(startDate.getTime() - j * 10000),
+    const userLogs = []
+
+    // Create fake heartrate logs
+    const today = new Date()
+    for (let j = 0; j < nHeartratrLogs; j++) {
+      let heartrateLog = []
+      const startDate = new Date(today.getTime() - j * 1000 * 60 * 60 * 24)
+      const baseHeartrate = 60 + Math.floor(Math.random() * 141) // Value between 60-200
+
+      // Add heartrates to the log
+      for (let k = 0; k < heartrateLogLength; k++) {
+        const randomDeviation = Math.floor(Math.random() * 4)
+        const value =
+          Math.random() < 0.5 ? baseHeartrate + randomDeviation : baseHeartrate - randomDeviation
+        heartrateLog.push({
+          value, // Base heartrate + random deviation
+          timestamp: new Date(startDate.getTime() - k * 10000),
+        })
+      }
+
+      heartrateLog = await Heartrate.bulkCreate(heartrateLog)
+
+      userLogs.push({
+        log: JSON.stringify(
+          heartrateLog.map(hr => {
+            const { value, timestamp } = hr.dataValues
+            return { value, timestamp }
+          })
+        ),
+        timestamp: startDate,
+        userId: user.id,
       })
-      currentLog.push(heartrate)
     }
 
-    await HeartrateLogs.create({
-      log: JSON.stringify(
-        currentLog.map(hr => {
-          const { value, timestamp } = hr.dataValues
-          return { value, timestamp }
-        })
-      ),
-      timestamp: startDate,
-    })
+    await HeartrateLog.bulkCreate(userLogs)
   }
 }
 

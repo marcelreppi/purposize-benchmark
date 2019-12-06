@@ -1,3 +1,12 @@
-exports.Users = require("./User")
-exports.Heartrates = require("./Heartrate")
-exports.HeartrateLogs = require("./HeartrateLog")
+const User = require("./User")
+const Heartrate = require("./Heartrate")
+const HeartrateLog = require("./HeartrateLog")
+
+HeartrateLog.belongsTo(User)
+User.hasMany(HeartrateLog)  
+
+module.exports = {
+  User,
+  Heartrate,
+  HeartrateLog,
+}

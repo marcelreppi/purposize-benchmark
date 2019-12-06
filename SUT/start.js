@@ -8,22 +8,27 @@ const sequelize = require("./sequelize")
 const createData = require("./createData")
 
 const startServer = async () => {
-  // Clear the DB
-  await sequelize.getQueryInterface().dropAllTables()
-  await sequelize.sync({ force: true })
+  if (process.env.GENERATE_DATA === "true") {
+    // Clear the DB
+    console.log("Clearing the DB...")
+    await sequelize.getQueryInterface().dropAllTables()
+    await sequelize.sync()
+  }
 
   // Load up all models and sync them to the db
   require("./models")
-  await sequelize.sync({ force: true })
+  await sequelize.sync()
 
   // Load purpose hierarchy
-  if (process.env.USE_PURPOSIZE === true) {
+  if (process.env.USE_PURPOSIZE === "true") {
     await purposize.loadPurposes("./purposes.yml")
   }
 
-  // Create fake data
-  console.log("Generating fake data...")
-  await createData()
+  if (process.env.GENERATE_DATA === "true") {
+    // Create fake data
+    console.log("Generating fake data...")
+    await createData()
+  }
 
   // Start up the server
   const app = require("./app")
