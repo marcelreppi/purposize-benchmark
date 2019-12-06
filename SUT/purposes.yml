@@ -1,0 +1,14 @@
+purposes:
+- name: HEALTH
+  relevantFields:
+    heartrates:
+      - value
+    heartrateLogs:
+      - log
+- name: PROFILE
+  relevantFields:
+    users:
+      - email
+      - dateOfBirth
+      - gender
+      - phoneNumber
