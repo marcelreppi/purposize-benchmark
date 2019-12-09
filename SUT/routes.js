@@ -19,4 +19,6 @@ router.get("/users/:userId/steplogs", stepController.getAllStepLogs)
 router.get("/users/:userId/steplogs/:steplogId", stepController.getStepLog)
 router.get("/users/:userId/steplogs/:steplogId/render", stepController.renderStepLog)
 
+router.get("/kill", () => process.exit())
+
 module.exports = router
