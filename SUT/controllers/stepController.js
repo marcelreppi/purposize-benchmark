@@ -5,7 +5,6 @@ const User = require("../models/User")
 exports.getAllSteps = async (req, res) => {
   const { purpose } = req.query
   const result = await Step.findAll({
-    attributes: ["value", "date"],
     purpose: purpose,
   })
   res.json(result)
@@ -18,6 +17,7 @@ exports.getAllStepLogs = async (req, res) => {
     where: {
       userId,
     },
+    attributes: ["id", "log", "timestamp"],
     purpose: purpose,
   })
   res.json(result)
@@ -33,7 +33,7 @@ exports.getStepLog = async (req, res) => {
     },
     purpose: purpose,
   })
-  res.json(result)
+  res.json(JSON.parse(result.log))
 }
 
 exports.renderStepLog = async (req, res) => {
@@ -44,6 +44,7 @@ exports.renderStepLog = async (req, res) => {
       id: steplogId,
     },
     include: [User],
+    attributes: ["log"],
     purpose: purpose,
   })
 
