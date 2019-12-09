@@ -9,7 +9,15 @@ exports.getAllHeartrates = async (req, res) => {
   res.json(result)
 }
 
-exports.renderHeartrates = async (req, res) => {
+exports.getAllHeartrateLogs = async (req, res) => {
+  const { purpose } = req.query
+  const result = await HeartrateLog.findAll({
+    purpose: purpose,
+  })
+  res.json(result)
+}
+
+exports.renderHeartrateLogs = async (req, res) => {
   const { purpose } = req.query
   const result = await HeartrateLog.findAll({
     purpose: purpose,

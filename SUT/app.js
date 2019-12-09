@@ -1,10 +1,14 @@
-const express = require('express')
+const express = require("express")
+const routes = require("./routes")
 
 const app = express()
-const routes = require('./routes')
 
-app.use(express.json()); // for parsing application/json
+app.set("view engine", "ejs")
 
-app.use('/', routes)
+app.use(express.json()) // for parsing application/json
+
+app.use(express.static(__dirname + "/public"))
+
+app.use("/", routes)
 
 module.exports = app

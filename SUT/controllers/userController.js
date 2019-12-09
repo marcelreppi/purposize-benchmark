@@ -1,9 +1,11 @@
+const ejs = require("ejs")
+
 const User = require("../models/User")
 
 exports.getAllUsers = async (req, res) => {
   const { purpose } = req.query
   const result = await User.findAll({
-    purpose: purpose,
+    purpose,
   })
   res.json(result)
 }
@@ -11,18 +13,25 @@ exports.getAllUsers = async (req, res) => {
 exports.getUserById = async (req, res) => {
   const { id } = req.params
   const { purpose } = req.query
-  const result = await User.find({
+  const user = await User.findOne({
     where: {
       id,
     },
-    purpose: purpose,
+    purpose,
   })
-  res.json(result)
+  res.json(user)
 }
 
 exports.renderUserProfile = async (req, res) => {
   const { id } = req.params
   const { purpose } = req.query
 
-  res.end()
+  const user = await User.findOne({
+    where: {
+      id,
+    },
+    purpose,
+  })
+
+  res.render("../views/profile", { user: user.dataValues })
 }

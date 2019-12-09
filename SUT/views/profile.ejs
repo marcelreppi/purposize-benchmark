@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link href="/css/profile.css" rel="stylesheet" type="text/css" />
+    <title>Super Fitness</title>
+  </head>
+  <body>
+    <div class="header">
+      <div class="title">Super Fitness</div>
+      <div class="navbar">
+        <div class="nav-item nav-title">Super Fitness!</div>
+        <div class="nav-item">Home</div>
+        <div class="nav-item active">Profile</div>
+        <div class="nav-item">Heart Rate</div>
+        <div class="nav-item">Step Logs</div>
+        <div class="nav-item">Access Codes</div>
+        <div class="nav-item">Purposes</div>
+        <div class="nav-item">Logout</div>
+      </div>
+    </div>
+
+    <div class="main-container">
+      <div class="page-title">User Profile</div>
+
+      <div class="value-pair">
+        <div class="value-type">Name:</div>
+        <div class="value"><%= user.name %></div>
+      </div>
+
+      <div class="value-pair">
+        <div class="value-type">Email:</div>
+        <div class="value"><%= user.email %></div>
+      </div>
+
+      <div class="value-pair">
+        <div class="value-type">Date of Birth:</div>
+        <div class="value"><%= user.dateOfBirth %></div>
+      </div>
+
+      <div class="value-pair">
+        <div class="value-type">Gender:</div>
+        <div class="value"><%= user.gender %></div>
+      </div>
+
+      <div class="value-pair">
+        <div class="value-type">Phone Number:</div>
+        <div class="value"><%= user.phoneNumber %></div>
+      </div>
+    </div>
+  </body>
+</html>
