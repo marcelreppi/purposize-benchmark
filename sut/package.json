@@ -13,7 +13,7 @@
     "express": "^4.17.1",
     "faker": "^4.1.0",
     "pg": "^7.14.0",
-    "purposize": "^1.1.13",
+    "purposize": "^1.1.14",
     "sequelize": "^5.21.2"
   },
   "devDependencies": {
