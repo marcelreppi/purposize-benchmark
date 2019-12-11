@@ -5,7 +5,7 @@ URLS_25K=(
   $HOST/users/random/render?purpose=PROFILE
   $HOST/users/random/steplogs?purpose=HEALTH
   $HOST/users/random/steplogs/render?purpose=HEALTH
-  $HOST/users/random/steplogs/all?purpose=HEALTH
+  $HOST/users/random/steplogs/all?purpose=HEALTH\&n=24
 )
 
 URLS_10K=(
