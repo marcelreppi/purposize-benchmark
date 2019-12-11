@@ -1,5 +1,3 @@
-export GENERATE_DATA=true
-
 while true; do
   export USE_PURPOSIZE=false
   npm start

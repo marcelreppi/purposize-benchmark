@@ -11,8 +11,13 @@ exports.getAllUsers = async (req, res) => {
 }
 
 exports.getUserById = async (req, res) => {
-  const { id } = req.params
+  let { id } = req.params
   const { purpose } = req.query
+
+  if (id === "random") {
+    id = Math.ceil(Math.random() * process.env.N_USERS)
+  }
+
   const user = await User.findOne({
     where: {
       id,
@@ -23,8 +28,12 @@ exports.getUserById = async (req, res) => {
 }
 
 exports.renderUserProfile = async (req, res) => {
-  const { id } = req.params
+  let { id } = req.params
   const { purpose } = req.query
+
+  if (id === "random") {
+    id = Math.ceil(Math.random() * process.env.N_USERS)
+  }
 
   const user = await User.findOne({
     where: {

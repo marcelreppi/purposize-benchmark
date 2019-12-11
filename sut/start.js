@@ -5,29 +5,15 @@ require("dotenv").config()
 const purposize = require("purposize")
 
 const sequelize = require("./sequelize")
-const createData = require("./createData")
 
 const startServer = async () => {
-  if (process.env.GENERATE_DATA === "true") {
-    // Clear the DB
-    console.log("Clearing the DB...")
-    await sequelize.getQueryInterface().dropAllTables()
-    await sequelize.sync()
-  }
-
   // Load up all models and sync them to the db
   require("./models")
   await sequelize.sync()
 
   // Load purpose hierarchy
   if (process.env.USE_PURPOSIZE === "true") {
-    await purposize.loadPurposes("./purposes.yml")
-  }
-
-  if (process.env.GENERATE_DATA === "true") {
-    // Create fake data
-    console.log("Generating fake data...")
-    await createData()
+    // await purposize.loadPurposes("./purposes.yml")
   }
 
   // Start up the server

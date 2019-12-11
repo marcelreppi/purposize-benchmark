@@ -11,40 +11,106 @@ exports.getAllSteps = async (req, res) => {
 }
 
 exports.getAllStepLogs = async (req, res) => {
-  const { userId, steplogId } = req.params
-  const { purpose } = req.query
+  let { userId } = req.params
+  const { purpose, n } = req.query
+
+  if (userId === "random") {
+    userId = Math.ceil(Math.random() * process.env.N_USERS)
+  }
+
   const result = await StepLog.findAll({
     where: {
       userId,
     },
-    attributes: ["id", "log", "timestamp"],
     purpose: purpose,
+    limit: n,
   })
   res.json(result)
 }
 
 exports.getStepLog = async (req, res) => {
-  const { userId, steplogId } = req.params
+  let { userId } = req.params
   const { purpose } = req.query
+
+  if (userId === "random") {
+    userId = Math.ceil(Math.random() * process.env.N_USERS)
+  }
+
   const result = await StepLog.findOne({
     where: {
       userId,
-      id: steplogId,
     },
     purpose: purpose,
   })
   res.json(JSON.parse(result.log))
 }
 
-exports.renderStepLog = async (req, res) => {
-  const { userId, steplogId } = req.params
-  const { purpose } = req.query
-  const result = await StepLog.findOne({
+exports.renderAllStepLogs = async (req, res) => {
+  let { userId } = req.params
+  const { purpose, n, view } = req.query
+
+  if (userId === "random") {
+    userId = Math.ceil(Math.random() * process.env.N_USERS)
+  }
+
+  const result = await StepLog.findAll({
     where: {
-      id: steplogId,
+      userId,
     },
     include: [User],
-    attributes: ["log"],
+    purpose: purpose,
+    limit: n,
+  })
+
+  switch (view) {
+    case "1":
+      res.render("../views/steplogCollection1.ejs", {
+        user: result[0].user,
+        stepLogs: result,
+      })
+      break
+    case "2":
+      res.render("../views/steplogCollection2.ejs", {
+        user: result[0].user,
+        stepLogs: result.map(r => {
+          r.log = JSON.parse(r.log)
+          return r
+        }),
+      })
+      break
+    case "3":
+      res.render("../views/steplogCollection3.ejs", {
+        user: result[0].user,
+        stepLogs: result.map(r => {
+          const log = JSON.parse(r.log)
+          log.forEach(logEntry => (logEntry.date = new Date(logEntry.date)))
+          r.log = log
+          return r
+        }),
+      })
+      break
+    default:
+      res.render("../views/steplogCollection1.ejs", {
+        user: result[0].user,
+        stepLogs: result,
+      })
+      break
+  }
+}
+
+exports.renderStepLog = async (req, res) => {
+  let { userId } = req.params
+  const { purpose } = req.query
+
+  if (userId === "random") {
+    userId = Math.ceil(Math.random() * process.env.N_USERS)
+  }
+
+  const result = await StepLog.findOne({
+    where: {
+      userId,
+    },
+    include: [User],
     purpose: purpose,
   })
 

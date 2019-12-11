@@ -4,7 +4,8 @@
   "description": "",
   "scripts": {
     "start": "node start.js",
-    "dev": "nodemon --ext js,html,css,ejs,env,json,rest start.js"
+    "dev": "nodemon --ext js,html,css,ejs,env,json,rest start.js",
+    "data": "node createData.js"
   },
   "dependencies": {
     "dotenv": "^8.2.0",
@@ -12,7 +13,7 @@
     "express": "^4.17.1",
     "faker": "^4.1.0",
     "pg": "^7.14.0",
-    "purposize": "^1.1.9",
+    "purposize": "^1.1.10",
     "sequelize": "^5.21.2"
   },
   "devDependencies": {

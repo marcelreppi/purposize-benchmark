@@ -1,6 +1,11 @@
-const faker = require("faker")
+require("dotenv").config()
 
-const { User, Heartrate, HeartrateLog, Step, StepLog } = require("./models")
+process.env.USE_PURPOSIZE = "true" // Make sure to always use purposize
+
+const faker = require("faker")
+const purposize = require("purposize")
+
+const sequelize = require("./sequelize")
 
 const nUsers = parseFloat(process.env.N_USERS)
 const nLogs = parseFloat(process.env.N_LOGS)
@@ -8,7 +13,20 @@ const logLength = parseFloat(process.env.LOG_LENGTH)
 
 faker.locale = "de"
 async function createData() {
+  // Clear the DB
+  console.log("Clearing the DB...")
+  await sequelize.getQueryInterface().dropAllTables()
+  await sequelize.sync()
+
+  const { User, Heartrate, HeartrateLog, Step, StepLog } = require("./models")
+
+  await sequelize.sync()
+
+  await purposize.loadPurposes("./purposes.yml")
+
   // Create fake user data
+  console.log("Creating fake data...")
+
   for (let i = 0; i < nUsers; i++) {
     const name = `${faker.name.firstName()} ${faker.name.lastName()}`
     const user = await User.create(
@@ -36,62 +54,51 @@ async function createData() {
       const baseStep = 12000
       for (let j = 0; j < logLength; j++) {
         // Heartrate values
-        const heartrateDeviation = Math.floor(Math.random() * 4)
-        const heartrateValue =
-          Math.random() < 0.5
-            ? baseHeartrate + heartrateDeviation
-            : baseHeartrate - heartrateDeviation
-        const heartrate = await Heartrate.create(
-          {
-            value: heartrateValue, // Base heartrate + random deviation
-            timestamp: new Date(startDate.getTime() - j * 10000),
-          },
-          {
-            purpose: "HEALTH",
-          }
-        )
-        heartrateLog.push(heartrate)
+        // const heartrateDeviation = Math.floor(Math.random() * 4)
+        // const heartrateValue =
+        //   Math.random() < 0.5
+        //     ? baseHeartrate + heartrateDeviation
+        //     : baseHeartrate - heartrateDeviation
+        // const heartrate = await Heartrate.create(
+        //   {
+        //     value: heartrateValue, // Base heartrate + random deviation
+        //     timestamp: new Date(startDate.getTime() - j * 10000),
+        //   },
+        //   {
+        //     purpose: "HEALTH",
+        //   }
+        // )
+        // heartrateLog.push(heartrate)
+
+        // await HeartrateLog.create(
+        //   {
+        //     log: JSON.stringify(
+        //       heartrateLog.map(hr => {
+        //         const { value, timestamp } = hr.dataValues
+        //         return { value, timestamp }
+        //       })
+        //     ),
+        //     timestamp: startDate,
+        //     userId: user.id,
+        //   },
+        //   {
+        //     purpose: "HEALTH",
+        //   }
+        // )
 
         // Step values
         const stepDeviation = Math.floor(Math.random() * 6000)
         const stepValue = Math.random() < 0.5 ? baseStep + stepDeviation : baseStep - stepDeviation
 
-        const step = await Step.create(
-          {
-            value: stepValue,
-            date: new Date(startDate.getTime() - j * 1000 * 60 * 60 * 24),
-          },
-          {
-            purpose: "HEALTH",
-          }
-        )
-        stepLog.push(step)
+        stepLog.push({
+          value: stepValue,
+          date: new Date(startDate.getTime() - j * 1000 * 60 * 60 * 24),
+        })
       }
-
-      await HeartrateLog.create(
-        {
-          log: JSON.stringify(
-            heartrateLog.map(hr => {
-              const { value, timestamp } = hr.dataValues
-              return { value, timestamp }
-            })
-          ),
-          timestamp: startDate,
-          userId: user.id,
-        },
-        {
-          purpose: "HEALTH",
-        }
-      )
 
       await StepLog.create(
         {
-          log: JSON.stringify(
-            stepLog.map(s => {
-              const { value, date } = s.dataValues
-              return { value, date }
-            })
-          ),
+          log: JSON.stringify(stepLog),
           timestamp: startDate,
           userId: user.id,
         },
@@ -101,6 +108,7 @@ async function createData() {
       )
     }
   }
+  console.log("Done")
 }
 
 async function bulkCreateData() {
@@ -158,8 +166,7 @@ async function bulkCreateData() {
   }
 }
 
-// module.exports = bulkCreateData
-module.exports = createData
+createData()
 
 function getGender() {
   const genders = [
