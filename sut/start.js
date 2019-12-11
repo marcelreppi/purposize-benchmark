@@ -13,7 +13,7 @@ const startServer = async () => {
 
   // Load purpose hierarchy
   if (process.env.USE_PURPOSIZE === "true") {
-    // await purposize.loadPurposes("./purposes.yml")
+    await purposize.loadPurposes("./purposes.yml")
   }
 
   // Start up the server
