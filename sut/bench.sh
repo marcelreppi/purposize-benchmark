@@ -1,3 +1,5 @@
+export CACHE=true
+
 while true; do
   export USE_PURPOSIZE=false
   npm start

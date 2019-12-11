@@ -11,6 +11,7 @@ if (process.env.USE_PURPOSIZE === "true") {
   console.log("Using purposize")
   purposize.init(sequelize, {
     logging: false,
+    cache: process.env.CACHE === "true"
   })
 } else {
   console.log("Not using purposize")
